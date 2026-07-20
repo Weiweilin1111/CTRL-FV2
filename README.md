@@ -2,7 +2,7 @@
 
 > 對著鏡頭問「我的鑰匙呢？」——畫面即時鎖定、查最後出現位置、認得「就是你那一件」。
 >
-> **v3.2** · YOLO-World（開放詞彙偵測）× CLIP（跨模態視覺語意）二階段架構
+> **v3.2.1** · YOLO-World（開放詞彙偵測）× CLIP（跨模態視覺語意）二階段架構
 > FastAPI 非同步後端 · Producer-Consumer 多執行緒管線 · Streamlit 前端 · 全程本機運算，影像不上雲
 >
 > 研究定位：**CtrlF-Memory — 基於視覺記憶建構之智慧環境搜尋助理**
@@ -46,7 +46,6 @@ streamlit run ui/app.py    # 前端 http://localhost:8501
 - 偵測模型 `yolov8m-worldv2.pt`（約 55MB）會自動下載；離線環境自動退回本地較大的 `yolov8x-world.pt`
 - CLIP ViT-B/32 權重與 YOLO-World 共用快取（`~/.cache/clip`），**零額外下載**
 - 環境需求：Python 3.10+、依賴見 `requirements.txt`（torch/CUDA 依硬體另裝）
-- 舊版（v2）程式碼與資料完整保留於 `legacy/`，不參與執行
 
 ## 系統架構
 
@@ -107,8 +106,8 @@ ctrlf_v2/
 ├── ui/app.py              # Streamlit 前端（純消費者，零業務邏輯）
 ├── tools/                 # rebuild_vectors.py 向量索引重建（由 SQLite 縮圖重算）
 ├── tests/                 # 常駐測試套件
-├── data/                  # ctrlf.db ＋ 向量索引（自動生成，TTL 自動清理）
-└── legacy/                # v2 舊版完整備份
+├── docs/                  # 系統需求書／企劃書與架構圖
+└── data/                  # ctrlf.db ＋ 向量索引（自動生成，TTL 自動清理）
 ```
 
 ## 設定重點（config.yaml）
@@ -143,7 +142,7 @@ ctrlf_v2/
 後端啟動中時，於專案根目錄執行：
 
 ```powershell
-python -X utf8 tests\test_memory_unit.py   # 記憶層離線單元測試（身分/情節/習慣，7 項，不需後端）
+python -X utf8 tests\test_memory_unit.py   # 記憶層離線單元測試（身分/情節/習慣/TTL 清理，8 項，不需後端）
 python -X utf8 tests\test_backend_api.py   # 33 項全端點回歸（搜尋/辭典/物品/記憶/串流/WS…）
 python -X utf8 tests\test_ui_apptest.py    # Streamlit AppTest：真實執行 UI 並模擬互動（6 項）
 ```
@@ -152,14 +151,14 @@ UI 有任何改動，務必跑一次 AppTest——它是唯一能抓到頁面執
 
 ## 效能實測（RTX 5070 Ti Laptop）
 
-| 指標 | v2 舊版 | v3.2 |
-|------|--------|------|
-| 串流 FPS | ＝推論 FPS（個位數） | **30**（與推論脫鉤） |
-| 推論 | 每幀必推（x@960） | 動態觸發 ~5fps · 43ms/幀（m@800 FP16） |
-| 多分頁觀看 | N 分頁＝N 份推論 | 永遠 1 份推論、1 份編碼 |
-| VRAM | 吃滿 | **約 0.7~1.1 GB** |
-| 同房間辨識數 | 3 件 | **23 件** |
-| 儲存增長 | 無上限 | 約 1MB／15 分鐘，7 天 TTL 封頂 |
+| 指標 | 實測數值 |
+|------|--------|
+| 串流 FPS | **30**（與推論頻率完全脫鉤） |
+| 推論 | 動態觸發 ~5fps · 43ms/幀（m@800 FP16） |
+| 多分頁觀看 | 永遠 1 份推論、1 份 JPEG 編碼（不隨分頁數增加） |
+| VRAM | 約 0.7~1.1 GB |
+| 同房間辨識數 | 23 件 |
+| 儲存增長 | 約 1MB／15 分鐘，7 天 TTL 封頂 |
 
 ## 疑難排解
 
@@ -183,4 +182,4 @@ UI 有任何改動，務必跑一次 AppTest——它是唯一能抓到頁面執
 
 ---
 
-CtrlF v3.2 · 所有影像皆在本機運算，不上傳雲端
+CtrlF v3.2.1 · 所有影像皆在本機運算，不上傳雲端
