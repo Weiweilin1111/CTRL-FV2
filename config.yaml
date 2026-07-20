@@ -1,0 +1,81 @@
+# ===================================================================
+# CtrlF v3 — 集中設定檔（所有模組唯一的設定來源）
+# 任何欄位省略時使用 ctrlf/config.py 內的預設值
+# ===================================================================
+
+camera:
+  index: 0
+  width: 1280          # 1080p 對 640 推論是浪費；720p 減半 USB 頻寬與差分成本
+  height: 720
+  fourcc: MJPG
+  use_dshow: true      # Windows MSMF 抓圖失敗的解法
+
+roi:
+  enabled: false       # 啟用後只偵測 rect 內的區域，框外背景直接抹黑
+  rect: [0.0, 0.0, 1.0, 1.0]   # 正規化 x1, y1, x2, y2（例: [0.1, 0.0, 0.9, 1.0]）
+
+motion:
+  downscale_width: 320 # 像素差分在縮圖上計算，成本忽略不計
+  sensitivity: 0.5     # 0~1，UI 滑桿可即時覆寫
+  max_infer_fps: 5.0   # 推論頻率硬上限（顯示串流不受限，照樣 24fps）
+  force_interval: 3.0  # 畫面全靜止時，至少每 3 秒抽樣一次
+  warmup_frames: 5
+
+detector:
+  # 效能/精度分級（依序嘗試載入，第一個成功者生效）：
+  #   eco      → yolov8s-worldv2.pt + imgsz 640   （最省電，~17ms）
+  #   balanced → yolov8m-worldv2.pt + imgsz 800   （預設：雜亂場景明顯更準）
+  #   quality  → yolov8x-world.pt   + imgsz 960   （本地既有大模型，動態閘控下你的 GPU 也扛得住）
+  model_candidates:
+    - yolov8m-worldv2.pt
+    - yolov8x-world.pt
+    - yolov8s-worldv2.pt
+  imgsz: 800           # 小物件/密集場景的甜蜜點；推論有閘控保護，不會過載
+  conf: 0.15           # 偵測下限調低，搭配 UI 信心滑桿動態過濾
+  iou: 0.45
+  max_det: 60
+  half: true           # CUDA 上以 FP16 推論，VRAM 約省一半
+  device: auto         # auto | cpu | cuda
+  # 注意：開放詞彙模型「只偵測詞彙表內的物品」——找不到的東西，請先把
+  # 名稱加進這裡或「常駐清單」，或直接在搜尋框輸入（會即時加入詞彙表）
+  base_labels: [pen, pencil, cell phone, key, keys, bottle, cup, mug, laptop,
+                keyboard, mouse, book, notebook, wallet, glasses, remote control,
+                headphones, earphones, watch, scissors, charger, power bank,
+                umbrella, backpack, handbag, tissue box, comb, lighter]
+  area_labels: [bed, desk, table, nightstand, shelf, chair, cabinet, floor,
+                sofa, windowsill]
+
+tracker:
+  iou_threshold: 0.25
+  center_dist_frac: 0.08
+  confirm_hits: 2      # 連續命中 2 次才確認，過濾單幀誤檢
+  ttl: 5.0             # 失蹤 5 秒移除軌跡（牆鐘時間，不再用幀數）
+  move_rebind_px: 60
+  heartbeat: 10.0
+
+embedder:
+  enabled: true        # CLIP 視覺特徵；權重已由 YOLO-World 快取，零下載
+  model: ViT-B/32
+  batch_size: 8
+  min_score: 0.22          # 語意搜尋最低餘弦相似度
+  personal_min_score: 0.75 # 「我的物品」比對門檻（誤認多→調高；認不出→調低）
+
+memory:
+  identity_threshold: 0.82   # 同類別合併為同一身分的餘弦門檻（誤併→調高；碎裂→調低）
+  identity_loc_boost: 0.04   # 一小時內同地點再現的門檻放寬量（時空先驗）
+  prototype_alpha: 0.2       # 身分原型 EMA 更新率
+  episode_gap_min: 30        # 同地點目擊間隔 < N 分鐘視為同一情節
+  habit_min_minutes: 10      # 習慣統計的最低累積停留時間
+
+storage:
+  data_dir: data
+  retention_days: 7
+  thumb_size: 160
+
+stream:
+  jpeg_quality: 80
+  max_fps: 24
+
+server:
+  host: 127.0.0.1
+  port: 8000

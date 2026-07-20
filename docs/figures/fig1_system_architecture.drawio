@@ -1,0 +1,94 @@
+<mxfile host="app.diagrams.net" agent="CtrlF-docs" version="24.0.0">
+  <diagram id="ctrlf-arch" name="圖一 系統架構">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="CtrlF 系統架構——Producer–Consumer 多執行緒管線（全程本機運算，影像不上雲）" style="text;html=1;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="120" y="16" width="920" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="cam" value="USB 相機" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="110" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="cap" value="CaptureService 擷取執行緒&#10;相機原生 FPS・斷線自動重連" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="200" y="130" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="hub" value="StateHub 執行期狀態中樞&#10;最新影格信箱・軌跡快照・JPEG 編碼快取" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="460" y="60" width="340" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="pipe" value="InferencePipeline 推論執行緒&#10;① 推論頻率上限＋像素差分動態閘控（靜止不推論）&#10;② ROI 遮罩：偵測範圍外背景抹黑&#10;③ YOLO-World-M FP16 @800——開放詞彙偵測&#10;④ IouTracker：IoU 匹配＋生命週期追蹤" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=left;spacingLeft=10;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="200" y="260" width="420" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="writer" value="StorageWriter&#10;批次寫入執行緒" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="690" y="260" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="db" value="SQLite（WAL）&#10;目擊紀錄・縮圖&#10;7 天 TTL 自動清理" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="920" y="245" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="embed" value="EmbeddingWorker 嵌入執行緒&#10;CLIP ViT-B/32 影像嵌入" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="690" y="360" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="vec" value="內嵌向量索引 ×2&#10;歷史目擊／個人物品" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="920" y="355" width="170" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="idy" value="IdentityManager 持續身分&#10;類別閘控＋EMA 原型＋時空先驗" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="690" y="470" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="mem" value="MemoryService&#10;情節／習慣惰性建構" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="920" y="470" width="170" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="api" value="FastAPI 非同步後端&#10;/stream /ws /search /semantic /items /memory /system" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="380" y="620" width="360" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ui" value="Streamlit 前端（純消費者）&#10;即時尋物・記憶時間軸・物品註冊管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="60" y="620" width="280" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="cam" target="cap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="發佈影格" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="cap" target="hub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" value="最新影格（信箱）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="hub" target="pipe">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="軌跡快照" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="pipe" target="hub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="SightingEvent 佇列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="pipe" target="writer">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="批次寫入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="writer" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="EmbedJob 佇列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="pipe" target="embed">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="視覺向量" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="embed" target="vec">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="身分指派" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="embed" target="idy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="object_identities" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="idy" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e11" value="查詢時合併" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="mem" target="db">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e12" value="只讀快照（MJPEG／WS）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="hub">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e13" value="查詢" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="idy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e14" value="語意搜尋" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="api" target="mem">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e15" value="REST／WebSocket／MJPEG" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" edge="1" parent="1" source="ui" target="api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

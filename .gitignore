@@ -1,0 +1,45 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ===== 模型權重（由 ultralytics 自動下載，勿入版控；yolov8x 超過 GitHub 100MB 上限）=====
+*.pt
+*.onnx
+*.engine
+
+# ===== 執行期資料 / 資料庫 =====
+data/*.db
+data/*.npz
+data/*.json
+data/thumbs/
+*.sqlite3
+*.pickle
+
+# ===== legacy 舊版產生的資料庫與快取 =====
+legacy/**/*.db
+legacy/**/chroma_db/
+
+# ===== 環境快照（含本機路徑，非必要）=====
+current_environment.txt
+
+# ===== Office 暫存 / 文件 =====
+~$*
+*.docx
+
+# ===== OS / IDE =====
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log

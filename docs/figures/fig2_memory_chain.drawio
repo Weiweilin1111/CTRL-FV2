@@ -1,0 +1,61 @@
+<mxfile host="app.diagrams.net" agent="CtrlF-docs" version="24.0.0">
+  <diagram id="ctrlf-memory" name="圖二 視覺記憶建構鏈">
+    <mxGraphModel dx="1400" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="CtrlF-Memory 視覺記憶建構鏈：感知 → 身分 → 情節 → 習慣" style="text;html=1;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="120" y="20" width="920" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="b1" value="Frame 影格&#10;（瞬時感知）" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="60" y="90" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b2" value="Object 物件&#10;（持續身分）" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="340" y="90" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b3" value="Episode 情節&#10;（時空片段）" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="620" y="90" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="b4" value="Habit 習慣&#10;（統計結論）" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="900" y="90" width="200" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="n1" value="開放詞彙偵測框&#10;＋實物縮圖&#10;＋CLIP 影像嵌入" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;align=left;spacingLeft=8;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="200" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="類別閘控：同類別才比對&#10;EMA 原型：觀測滾動平均&#10;時空先驗：1 小時內同地點&#10;再現、比對門檻放寬&#10;→ cup#1 跨重啟仍是同一個" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;align=left;spacingLeft=8;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="340" y="200" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="同一身分＋同一地點＋&#10;目擊間隔＜30 分鐘&#10;→ 合併為一段情節&#10;例：09:12–11:40 書桌&#10;　　14:30–15:05 沙發" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;align=left;spacingLeft=8;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="620" y="200" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="依「停留時間」加權的&#10;地點分佈（防閃爍目擊污染）&#10;例：通常在書桌（70%）&#10;觀測量不足時不下結論" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;align=left;spacingLeft=8;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="900" y="200" width="200" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="a1" value="CLIP 嵌入比對" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;" edge="1" parent="1" source="b1" target="b2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a2" value="時空合併" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;" edge="1" parent="1" source="b2" target="b3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="a3" value="停留時間統計" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeWidth=2;" edge="1" parent="1" source="b3" target="b4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="b1" target="n1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="b2" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="b3" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;dashed=1;strokeColor=#999999;" edge="1" parent="1" source="b4" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="設計要點：情節與習慣採「查詢時惰性建構」——身分指派發生於非同步嵌入執行緒，若物化入庫將引入排序競態；7 天保留量級於查詢時合併僅需毫秒級，且結果永遠與事實一致。身分與目擊同步 TTL 清理，長期運行不膨脹。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="60" y="350" width="1040" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

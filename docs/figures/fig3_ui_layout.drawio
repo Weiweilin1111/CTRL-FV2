@@ -1,0 +1,52 @@
+<mxfile host="app.diagrams.net" agent="CtrlF-docs" version="24.0.0">
+  <diagram id="ctrlf-ui" name="圖三 UI 版面配置">
+    <mxGraphModel dx="1400" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="826" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="CtrlF 前端版面配置（Streamlit・深色主題）" style="text;html=1;fontSize=16;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="120" y="16" width="920" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="window" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#666666;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="40" y="60" width="1060" height="640" as="geometry" />
+        </mxCell>
+        <mxCell id="sidebar" value="側欄（低頻設定）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#999999;verticalAlign=top;fontStyle=1;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="60" y="80" width="230" height="600" as="geometry" />
+        </mxCell>
+        <mxCell id="sb1" value="📈 系統監控（2.5s 更新）&#10;串流／推論 FPS・延遲&#10;VRAM 進度條・儲存用量&#10;版本一致性警告" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bbbbbb;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="75" y="115" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="sb2" value="⚙️ 偵測調校（即時生效）&#10;信心門檻／變化敏感度／&#10;分析頻率 三滑桿&#10;顯示所有偵測物件 開關" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bbbbbb;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="75" y="250" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="sb3" value="📌 常駐追蹤&#10;新增／移除常駐物件&#10;（持續記錄行蹤）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bbbbbb;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="75" y="385" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="sb4" value="📖 中文同義詞辭典&#10;內建約 90 詞&#10;自訂「你的講法 → 英文標籤」" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#bbbbbb;align=left;spacingLeft=8;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="75" y="490" width="200" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="header" value="CtrlF 品牌標頭（漸層字）＋右上狀態徽章：● 運作中・CUDA・版本" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e6f2ff;strokeColor=#6c8ebf;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="80" width="770" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="search" value="🔍 搜尋框（中文可・Enter 送出）＋ ✕ 清除　｜　快速標籤 chips：⭐ 常駐物件・🕒 最近搜尋" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="310" y="145" width="770" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="tabs" value="分頁：【即時尋物】｜【記憶時間軸】｜【物品註冊管理】" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="210" width="770" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="video" value="即時畫面（iframe 內 MJPEG）&#10;・骨架屏動畫＋斷線自動重連&#10;・WebSocket HUD 效能角標&#10;・命中目標：綠框＋半透明高亮＋角標&#10;・皆不觸發頁面重繪，畫面永不中斷" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;align=left;spacingLeft=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="265" width="470" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="results" value="搜尋結果（fragment 1.5s 局部更新）&#10;・「就在畫面裡！」鎖定卡&#10;・記憶回溯卡：最後情節＋習慣&#10;・最後出現位置卡（實物縮圖）&#10;・AI 語意最相似（無紀錄時）&#10;・三步驟新手引導（未搜尋時）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=left;spacingLeft=10;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="800" y="265" width="280" height="240" as="geometry" />
+        </mxCell>
+        <mxCell id="personal" value="我的物品列（3s 局部更新）：縮圖・最後行蹤・辨識相似度｜「找它」一鍵搜尋｜「移除」" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="310" y="520" width="770" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="uxnote" value="UX 原則：影像與效能資訊走 MJPEG／WebSocket，不觸發 Streamlit 重繪；互動區塊以 fragment 局部更新；文案白話（「就在畫面裡！」「持續掃描…」）；未收錄中文詞主動引導補辭典；長時操作（照片上傳計算特徵）有進度回饋與錯誤原因。" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=10;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="310" y="585" width="770" height="70" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

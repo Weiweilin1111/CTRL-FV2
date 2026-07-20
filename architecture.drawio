@@ -1,0 +1,237 @@
+﻿<mxfile host="65bd71144e">
+    <diagram id="ctrlf-v31" name="CtrlF v3.1 系統架構">
+        <mxGraphModel dx="1816" dy="2052" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1500" pageHeight="950" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="CtrlF v3.1 系統架構 — YOLO-World × CLIP 二階段解耦・Producer-Consumer 多執行緒" style="text;html=1;fontSize=18;fontStyle=1;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="10" width="900" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="laneCap" value="資料採集 capture" style="swimlane;rounded=1;html=1;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="420" width="240" height="250" as="geometry"/>
+                </mxCell>
+                <mxCell id="cam" value="USB 相機&lt;br&gt;1280×720 MJPG" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" parent="laneCap" vertex="1">
+                    <mxGeometry x="20" y="45" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cap" value="CaptureService&lt;br&gt;擷取執行緒・斷線自動重連" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;" parent="laneCap" vertex="1">
+                    <mxGeometry x="20" y="140" width="200" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" parent="laneCap" source="cam" target="cap" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="laneRt" value="執行期共享 runtime" style="swimlane;rounded=1;html=1;startSize=30;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="60" width="440" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="hub" value="StateHub 狀態中樞&lt;br&gt;最新影格信箱・軌跡快照・效能統計・JPEG 編碼快取" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="laneRt" vertex="1">
+                    <mxGeometry x="20" y="45" width="400" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="settings" value="RuntimeSettings&lt;br&gt;信心 / 靈敏度 / FPS 上限&lt;br&gt;（UI 滑桿熱調參）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="laneRt" vertex="1">
+                    <mxGeometry x="20" y="150" width="190" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="vocab" value="VocabularyManager&lt;br&gt;＋ Lexicon 中文辭典&lt;br&gt;基礎詞 ∪ 常駐 ∪ 查詢 ∪ 個人物品" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" parent="laneRt" vertex="1">
+                    <mxGeometry x="230" y="150" width="190" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="laneVis" value="AI 核心 vision（推論執行緒）" style="swimlane;rounded=1;html=1;startSize=30;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="330" y="420" width="440" height="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="gate" value="MotionGate&lt;br&gt;頻率硬上限＋像素差分&lt;br&gt;＋定時強制取樣" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="laneVis" vertex="1">
+                    <mxGeometry x="20" y="45" width="190" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="roi" value="RoiMask&lt;br&gt;邊界 ROI 遮罩&lt;br&gt;（背景抹黑）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="laneVis" vertex="1">
+                    <mxGeometry x="230" y="45" width="190" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="det" value="YoloWorldDetector&lt;br&gt;yolov8m-worldv2・FP16・imgsz 800・開放詞彙" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="laneVis" vertex="1">
+                    <mxGeometry x="20" y="150" width="400" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="trk" value="IouTracker&lt;br&gt;IoU 匹配・生命週期（確認/逾時）・區域定位・縮圖裁切" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="laneVis" vertex="1">
+                    <mxGeometry x="20" y="245" width="400" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="emb" value="EmbeddingWorker&lt;br&gt;CLIP ViT-B/32&lt;br&gt;影像嵌入（批次）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="laneVis" vertex="1">
+                    <mxGeometry x="20" y="345" width="190" height="105" as="geometry"/>
+                </mxCell>
+                <mxCell id="per" value="PersonalItemService&lt;br&gt;個人物品比對&lt;br&gt;同類 0.75／跨類 +0.08" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;" parent="laneVis" vertex="1">
+                    <mxGeometry x="230" y="345" width="190" height="105" as="geometry"/>
+                </mxCell>
+                <mxCell id="e4" value="觸發" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="laneVis" source="gate" target="det" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e5" value="遮罩後影格" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="laneVis" source="roi" target="det" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e6" value="偵測結果" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="laneVis" source="det" target="trk" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e9" value="EmbedJob（裁切）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="laneVis" source="trk" target="emb" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e11" value="順手比對" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="laneVis" source="emb" target="per" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="laneSto" value="特徵儲存 storage" style="swimlane;rounded=1;html=1;startSize=30;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="420" width="300" height="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="wr" value="StorageWriter&lt;br&gt;批次寫入執行緒・TTL 週期清理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" parent="laneSto" vertex="1">
+                    <mxGeometry x="20" y="45" width="260" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="repo" value="Repository（SQLite WAL）&lt;br&gt;sightings・tags・aliases&lt;br&gt;personal_items・personal_photos" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" parent="laneSto" vertex="1">
+                    <mxGeometry x="20" y="140" width="260" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="vs1" value="NumpyVectorStore：vectors&lt;br&gt;歷史目擊 CLIP 影像向量" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" parent="laneSto" vertex="1">
+                    <mxGeometry x="20" y="270" width="260" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="vs2" value="NumpyVectorStore：personal&lt;br&gt;個人物品參考照向量" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;" parent="laneSto" vertex="1">
+                    <mxGeometry x="20" y="365" width="260" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="e14" value="批次 upsert" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="laneSto" source="wr" target="repo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e15" value="TTL 同步刪除" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;dashed=1;exitX=1;exitY=0.5;entryX=1;entryY=0;" parent="laneSto" source="wr" target="vs1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="laneApi" value="API 層（FastAPI async）" style="swimlane;rounded=1;html=1;startSize=30;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="60" width="300" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="r1" value="/stream/mjpeg・/ws/state" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" parent="laneApi" vertex="1">
+                    <mxGeometry x="20" y="45" width="260" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="r2" value="/search・/state・/history&lt;br&gt;/semantic・/tags" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" parent="laneApi" vertex="1">
+                    <mxGeometry x="20" y="100" width="260" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="r3" value="/items（註冊/照片/測試）・/aliases" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" parent="laneApi" vertex="1">
+                    <mxGeometry x="20" y="165" width="260" height="45" as="geometry"/>
+                </mxCell>
+                <mxCell id="r4" value="/system/stats・/system/settings&lt;br&gt;（版本握手＋熱調參）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;" parent="laneApi" vertex="1">
+                    <mxGeometry x="20" y="220" width="260" height="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="laneUi" value="前端展示 Streamlit" style="swimlane;rounded=1;html=1;startSize=30;fillColor=#f8cecc;strokeColor=#b85450;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="1190" y="60" width="270" height="290" as="geometry"/>
+                </mxCell>
+                <mxCell id="t1" value="即時尋物分頁&lt;br&gt;MJPEG iframe＋WS HUD&lt;br&gt;搜尋結果・我的物品" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="laneUi" vertex="1">
+                    <mxGeometry x="20" y="45" width="230" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="t2" value="物品註冊管理分頁&lt;br&gt;照片庫・補照・改名・測試比對" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="laneUi" vertex="1">
+                    <mxGeometry x="20" y="135" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="t3" value="側欄&lt;br&gt;系統監控・偵測調校・常駐・辭典" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" parent="laneUi" vertex="1">
+                    <mxGeometry x="20" y="210" width="230" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="e2" value="發佈影格（信箱）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="cap" target="hub" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e3" value="wait_frame 取最新影格" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="hub" target="gate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e7" value="軌跡快照＋統計" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;exitX=0;exitY=0.5;" parent="1" source="trk" target="hub" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="300" y="697"/>
+                            <mxPoint x="300" y="160"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e8" value="SightingEvent 佇列" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="trk" target="wr" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e10" value="upsert 向量" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="emb" target="vs1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e12" value="search" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="per" target="vs2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e13" value="更新最後行蹤" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;dashed=1;" parent="1" source="per" target="repo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e16" value="set_classes 開放詞彙" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;dashed=1;" parent="1" source="vocab" target="det" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e17" value="熱調參讀取" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;dashed=1;" parent="1" source="settings" target="gate" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e18" value="讀快照/JPEG・WS 推播" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="r1" target="hub" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e19" value="歷史/標籤/縮圖" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="r2" target="repo" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e20" value="語意搜尋（CLIP 文字向量）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;exitX=0;exitY=1;" parent="1" source="r2" target="vs1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="800" y="240"/>
+                            <mxPoint x="800" y="725"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e21" value="辭典解析＋詞彙更新" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;dashed=1;" parent="1" source="r2" target="vocab" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e22" value="註冊/照片/測試比對" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;exitX=0;exitY=0.5;" parent="1" source="r3" target="per" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="810" y="290"/>
+                            <mxPoint x="810" y="797"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e23" value="熱調參" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;dashed=1;exitX=0;exitY=0.5;" parent="1" source="r4" target="settings" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e24" value="MJPEG／WebSocket" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="t1" target="r1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e25" value="REST（fragment 局部輪詢）" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="t2" target="r3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="e26" value="REST" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="t3" target="r4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="ctrlf-memory-v32" name="v3.2 視覺記憶層">
+        <mxGraphModel dx="1200" dy="900" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="900" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="m_title" value="CtrlF-Memory — 視覺記憶建構管線（Frame → Object → Episode → Habit）" style="text;html=1;fontSize=16;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="20" width="700" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_cap" value="Capture 影像擷取" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="70" width="320" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_det" value="YOLO-World 開放詞彙偵測" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="160" width="320" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_clip" value="CLIP 影像嵌入（ViT-B/32）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="250" width="320" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_id" value="Identity Manager 持續身分引擎&lt;br&gt;類別閘控＋EMA 原型＋時空先驗&lt;br&gt;「框」→「同一件物品」" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="340" width="320" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_ep" value="Episode Builder 情節建構&lt;br&gt;同地點・間隔&amp;lt;30min 合併（查詢時惰性建構）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="460" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_habit" value="Habit 習慣固化&lt;br&gt;停留時間加權的地點分佈&lt;br&gt;（語意記憶）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="640" y="455" width="200" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_store" value="Memory Store&lt;br&gt;SQLite：sightings(object_id)・object_identities&lt;br&gt;向量索引：目擊嵌入・個人物品錨點" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="560" width="320" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_query" value="Memory Query Engine&lt;br&gt;/memory/objects・/memory/timeline・/memory/recall" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="680" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="m_nl" value="Natural Language Interface&lt;br&gt;中文辭典解析（現況）→ LLM 記憶問答（規劃）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;dashed=0;" parent="1" vertex="1">
+                    <mxGeometry x="240" y="780" width="320" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="me1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" parent="1" source="m_cap" target="m_det" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me2" value="裁切" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="m_det" target="m_clip" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me3" value="嵌入" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="m_clip" target="m_id" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me4" value="object_id" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="m_id" target="m_ep" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" parent="1" source="m_ep" target="m_store" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me6" value="情節" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="m_ep" target="m_habit" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" parent="1" source="m_store" target="m_query" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me8" value="習慣" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;" parent="1" source="m_habit" target="m_query" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+                <mxCell id="me9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;" parent="1" source="m_query" target="m_nl" edge="1"><mxGeometry relative="1" as="geometry"/></mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
